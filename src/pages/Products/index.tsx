@@ -1,3 +1,4 @@
+import { useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
 import CardsGrid from "../../components/CardsGrid";
 import Footer from "../../components/Footer";
@@ -15,24 +16,21 @@ import {
   Container,
   ContentContainer,
   ContentTitle,
-  FieldButton,
   FilterButton,
   FilterContainer,
   Screen,
-  SearchBar,
-  SearchBarContainer,
   SearchContainer,
   Select,
   SelectOption,
 } from "./styles";
-import { useLocation } from "react-router-dom";
+import SearchInput from "../../components/SearchInput";
 
 const Products = () => {
   const location = useLocation();
   const category = location.state && location.state.category;
 
-  const [categories, setCategories] = useState<Category[]>();
-  const [products, setProducts] = useState<Product[]>();
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [products, setProducts] = useState<Product[]>([]);
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [selectedCategory, setSelectedCategory] = useState<string>(category);
   const [filteredProducts, setFilteredProducts] = useState<Product[]>();
@@ -62,6 +60,10 @@ const Products = () => {
     setSearchTerm(event.target.value);
   };
 
+  const handleCategoryChange = (event: any): void => {
+    setSelectedCategory(event.target.value);
+  };
+
   const handleSearch = (event: any): void => {
     if (event.key !== "Enter" && event.key !== undefined) {
       return;
@@ -71,10 +73,6 @@ const Products = () => {
         product.title.toUpperCase().includes(searchTerm.toUpperCase())
       )
     );
-  };
-
-  const handleCategoryChange = (event: any): void => {
-    setSelectedCategory(event.target.value);
   };
 
   useEffect(() => {
@@ -92,17 +90,10 @@ const Products = () => {
       ) : (
         <Container>
           <SearchContainer>
-            <SearchBarContainer>
-              <SearchBar
-                placeholder="Procurando por algum produto?"
-                type="text"
-                onChange={handleInputChange}
-                onKeyDown={handleSearch}
-              />
-              <FieldButton onClick={handleSearch}>
-                <ButtonIcon src="/SearchIcon.svg" />
-              </FieldButton>
-            </SearchBarContainer>
+            <SearchInput
+              onInputChange={handleInputChange}
+              onSearchAction={handleSearch}
+            />
 
             <FilterContainer>
               <FilterButton>
@@ -113,7 +104,7 @@ const Products = () => {
                 <SelectOption value="">Selecione a categoria</SelectOption>
                 {categories &&
                   categories.map((category: any) => (
-                    <SelectOption value={category}>
+                    <SelectOption value={category} key={category}>
                       {category[0].toUpperCase() + category.slice(1)}
                     </SelectOption>
                   ))}
@@ -130,7 +121,6 @@ const Products = () => {
           </ContentContainer>
         </Container>
       )}
-
       <Footer />
     </Screen>
   );
