@@ -24,7 +24,7 @@ import {
 
 const Products = () => {
   const location = useLocation();
-  const category = location.state && location.state.category;
+  const category = location.state?.category;
 
   const [categories, setCategories] = useState<Category[]>([]);
   const [products, setProducts] = useState<Product[]>([]);
@@ -33,40 +33,42 @@ const Products = () => {
   const [filteredProducts, setFilteredProducts] = useState<Product[]>();
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
-  const fetchProducts = () => {
-    getProducts()
-      .then((resp) => {
-        setProducts(resp);
-        setIsLoading(false);
-      })
-      .catch((error) => {
-        alert("error");
-      });
-  };
-  const fetchCategories = () => {
-    getCategories()
-      .then((resp) => {
-        setCategories(resp);
-      })
-      .catch((error) => {
-        alert("error");
-      });
+  const fetchProducts = async () => {
+    try {
+      const resp = await getProducts();
+      setProducts(resp);
+    } catch (error) {
+      console.error("Error getting products:", error);
+    }
   };
 
-  const handleInputChange = (event: any): void => {
+  const fetchCategories = async () => {
+    try {
+      const resp = await getCategories();
+      setCategories(resp);
+    } catch (error) {
+      console.error("Error getting categories:", error);
+    }
+  };
+
+  const handleInputChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ): void => {
     setSearchTerm(event.target.value);
   };
 
-  const handleCategoryChange = (event: any): void => {
+  const handleCategoryChange = (
+    event: React.ChangeEvent<HTMLSelectElement>
+  ): void => {
     setSelectedCategory(event.target.value);
   };
 
-  const handleSearch = (event: any): void => {
+  const handleSearch = (event: React.KeyboardEvent<HTMLInputElement>): void => {
     if (event.key !== "Enter" && event.key !== undefined) {
       return;
     }
     setFilteredProducts(
-      products!.filter((product: Product) =>
+      products.filter((product: Product) =>
         product.title.toUpperCase().includes(searchTerm.toUpperCase())
       )
     );
@@ -76,6 +78,7 @@ const Products = () => {
     fetchProducts();
     fetchCategories();
     window.scrollTo(0, 0);
+    setIsLoading(false);
   }, []);
 
   return (
@@ -102,7 +105,7 @@ const Products = () => {
           <ContentContainer>
             <ContentTitle>Products</ContentTitle>
             <CardsGrid
-              products={filteredProducts ?? products!}
+              products={filteredProducts ?? products}
               category={selectedCategory}
             />
           </ContentContainer>
