@@ -1,14 +1,7 @@
-import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
-
 import Footer from "../../components/Footer";
 import Header from "../../components/Header";
 import Loader from "../../components/Loader";
 import ProductStars from "../../components/ProductStars";
-
-import { getProduct } from "../../services/products";
-
-import { Product } from "../../types/productsInterface";
 
 import {
   Container,
@@ -29,23 +22,10 @@ import {
   SpecInfo,
   SpecTitle,
 } from "./styles";
+import useProductsDetailViewController from "./useProductsDetailViewController";
 
-function ProductsDetail() {
-  const { id } = useParams<string>();
-
-  const [product, setProduct] = useState<Product>();
-  const [isLoading, setIsLoading] = useState<boolean>(true);
-
-  useEffect(() => {
-    getProduct(id)
-      .then((resp) => {
-        setProduct(resp);
-        setIsLoading(false);
-      })
-      .catch((error) => {
-        alert("error");
-      });
-  });
+const ProductsDetail = () => {
+  const { isLoading, product } = useProductsDetailViewController();
 
   return (
     <>
@@ -110,6 +90,6 @@ function ProductsDetail() {
       <Footer />
     </>
   );
-}
+};
 
 export default ProductsDetail;
