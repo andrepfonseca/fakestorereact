@@ -61,8 +61,6 @@ export const useFetch = (url: any) => {
 
         setError("");
       } catch (error: any) {
-        console.log(error.message);
-
         setError("Houve um erro ao carregar os dados!");
       }
 
@@ -97,8 +95,6 @@ export const useFetch = (url: any) => {
 
     httpRequest();
   }, [config]);
-
-  console.log(config);
 
   return { data, httpConfig, loading, error };
 };
