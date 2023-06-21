@@ -3,12 +3,7 @@ import ProductCard from "../ProductCard";
 
 import { Product } from "../../types/productsInterface";
 
-interface CardsGridProps {
-  products: Product[];
-  category: string;
-}
-
-function CardsGrid({ products, category }: CardsGridProps) {
+function CardsGrid({ products, category }: any) {
   let displayProducts = products;
 
   if (category) {

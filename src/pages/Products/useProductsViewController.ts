@@ -3,37 +3,20 @@ import { useLocation } from "react-router-dom";
 
 import { Product } from "../../types/productsInterface";
 
-import { getProducts } from "../../services/products";
-import getCategories from "../../services/categories";
+import useProductsViewModel from "../../viewmodel/useProductsViewModel";
+import useCategoriesViewModel from "../../viewmodel/useCategoriesViewModel";
 
 const useProductsViewController = () => {
+  const { products, getAllProducts } = useProductsViewModel();
+  const { categories, getAllCategories } = useCategoriesViewModel();
+
   const location = useLocation();
   const category = location.state?.category;
 
-  const [categories, setCategories] = useState<string[]>([]);
-  const [products, setProducts] = useState<Product[]>([]);
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [selectedCategory, setSelectedCategory] = useState<string>(category);
   const [filteredProducts, setFilteredProducts] = useState<Product[]>();
   const [isLoading, setIsLoading] = useState<boolean>(true);
-
-  const fetchProducts = async () => {
-    try {
-      const resp = await getProducts();
-      setProducts(resp);
-    } catch (error) {
-      console.error("Error getting products:", error);
-    }
-  };
-
-  const fetchCategories = async () => {
-    try {
-      const resp = await getCategories();
-      setCategories(resp);
-    } catch (error) {
-      console.error("Error getting categories:", error);
-    }
-  };
 
   const handleInputChange = (
     event: React.ChangeEvent<HTMLInputElement>
@@ -59,11 +42,11 @@ const useProductsViewController = () => {
   };
 
   useEffect(() => {
-    fetchProducts();
-    fetchCategories();
+    getAllProducts();
+    getAllCategories();
     window.scrollTo(0, 0);
     setIsLoading(false);
-  }, []);
+  }, [getAllProducts, getAllCategories]);
 
   return {
     categories,

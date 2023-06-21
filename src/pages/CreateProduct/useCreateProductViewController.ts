@@ -1,7 +1,8 @@
 import { Control, FieldValues, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as Yup from "yup";
-import { useNavigate } from "react-router-dom";
+// import { useNavigate } from "react-router-dom";
+import useProductsViewModel from "../../viewmodel/useProductsViewModel";
 
 interface FormData {
   title?: string;
@@ -20,7 +21,8 @@ const schema = Yup.object().shape({
 });
 
 const useCreateProductViewController = () => {
-  const navigate = useNavigate();
+  const { createdProduct, createProduct } = useProductsViewModel();
+  // const navigate = useNavigate();
   const {
     control,
     handleSubmit,
@@ -28,6 +30,7 @@ const useCreateProductViewController = () => {
     formState: { errors },
   } = useForm<FormData>({
     resolver: yupResolver(schema),
+    mode: "all",
   });
 
   const formControl = control as unknown as Control<FieldValues>;
@@ -45,27 +48,11 @@ const useCreateProductViewController = () => {
       },
     };
 
-    try {
-      const response = await fetch("http://localhost:3000/products/", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(newProduct),
-      });
+    createProduct(newProduct);
 
-      const responseData = await response.json();
-
-      if (response)
-        alert(
-          "Produto " +
-            responseData.title +
-            " criado, seu id é: " +
-            responseData.id
-        );
-      reset();
-      navigate("/products/" + responseData.id);
-    } catch (error) {
-      console.log("Error: ", error);
-    }
+    alert(`Produto criado`);
+    reset();
+    // navigate("/products/" + createdProduct!.id);
   };
 
   return {
@@ -73,6 +60,7 @@ const useCreateProductViewController = () => {
     errors,
     handleSubmit,
     handleRegister,
+    createdProduct,
   };
 };
 

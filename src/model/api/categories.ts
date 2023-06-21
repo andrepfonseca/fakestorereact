@@ -6,4 +6,4 @@ const getCategories = async () => {
   return response.data;
 };
 
-export default getCategories;
+export { getCategories };

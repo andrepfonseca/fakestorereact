@@ -1,3 +1,4 @@
+import { Product } from "../../types/productsInterface";
 import api from "./api";
 
 const getProducts = async () => {
@@ -15,4 +16,9 @@ const getProduct = async (id: string = "") => {
   return response.data;
 };
 
-export { getProduct, getProducts, getBestSellingProducts };
+const postProduct = async (product: Product) => {
+  const response = await api.post("products/", product);
+  return response.data;
+};
+
+export { getProduct, getProducts, getBestSellingProducts, postProduct };

@@ -9,6 +9,7 @@ import useCreateProductViewController from "./useCreateProductViewController";
 const CreateProduct = () => {
   const { formControl, errors, handleSubmit, handleRegister } =
     useCreateProductViewController();
+
   return (
     <>
       <Header />
